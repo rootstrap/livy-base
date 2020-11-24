@@ -1,0 +1,31 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: livy-test
+  labels:
+    app: livy-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: livy-test
+  template:
+    metadata:
+      labels:
+        app: livy-test
+    spec:
+      serviceAccountName: spark
+      containers:
+      - name: livy-test
+        image: 170372878108.dkr.ecr.us-west-1.amazonaws.com/livy-test:latest
+        env:
+        - name: SPARK_MASTER_ENDPOINT
+          value: "k8s://https://981D9F4BCB77BFF2B3EECDD966CAB4D5.yl4.us-west-1.eks.amazonaws.com"
+        - name: SPARK_MASTER_PORT
+          value: "443"
+        - name: DEPLOY_MODE
+          value: "cluster"
+        
+        ports:
+        - containerPort: 8998
