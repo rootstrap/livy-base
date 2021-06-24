@@ -58,10 +58,10 @@ function init(){
 
 function livy_server_service(){
 
-    export SPARK_HOME=/opt/spark-3.0.1-bin-hadoop3.2
+    export SPARK_HOME=/opt/spark-3.1.2-bin-hadoop3.2
     
     echo "starting Livy Server!"
-    /opt/apache-livy-0.7.0-incubating-bin/bin/livy-server start
+    /opt/apache-livy-0.7.1-incubating-bin/bin/livy-server start
 
     # whatever blocking call
     tail -f /dev/null

@@ -18,10 +18,10 @@ spec:
       serviceAccountName: spark
       containers:
       - name: livy-test
-        image: 170372878108.dkr.ecr.us-west-1.amazonaws.com/livy-test:latest
+        image: mikaelapisani/apache-livy:latest
         env:
         - name: SPARK_MASTER_ENDPOINT
-          value: "k8s://https://981D9F4BCB77BFF2B3EECDD966CAB4D5.yl4.us-west-1.eks.amazonaws.com"
+          value: "k8s://https://3BFF0D2284FB47D91BA0F33340331F80.gr7.us-west-2.eks.amazonaws.com"
         - name: SPARK_MASTER_PORT
           value: "443"
         - name: DEPLOY_MODE
