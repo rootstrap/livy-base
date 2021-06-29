@@ -36,7 +36,7 @@ RUN mkdir /var/apache-spark-binaries/
 
 # binaries
 # apache livy
-RUN wget http://archive.apache.org/dist/incubator/livy/${LIVY_VERSION}/apache-livy-${LIVY_VERSION}-bin.zip
+RUN wget http://archive.apache.org/dist/incubator/livy/${LIVY_VERSION}/apache-livy-${LIVY_VERSION}-bin.zip /tmp/livy.zip
 
 RUN unzip /tmp/livy.zip -d /opt/
 # Logging dir
