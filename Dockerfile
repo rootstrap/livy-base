@@ -36,11 +36,11 @@ RUN mkdir /var/apache-spark-binaries/
 
 # binaries
 # apache livy
-RUN wget -O /tmp/livy.zip http://archive.apache.org/dist/incubator/livy/${LIVY_VERSION}/apache-livy-${LIVY_VERSION}-bin.zip 
+RUN wget http://archive.apache.org/dist/incubator/livy/${LIVY_VERSION}/apache-livy-${LIVY_VERSION}-bin.zip 
 
-RUN unzip /tmp/livy.zip -d /opt/
+RUN unzip apache-livy-${LIVY_VERSION}-bin.zip -d /opt/
 # Logging dir
-RUN mkdir /opt/apache-${LIVY_VERSION}-bin/logs
+RUN mkdir /opt/apache-livy-${LIVY_VERSION}-bin/logs
 
 # apache spark
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADDOP_VERSION}.tgz -O /tmp/spark-${SPARK_VERSION}-bin-hadoop${HADDOP_VERSION}.tgz
