@@ -25,6 +25,10 @@ spec:
           value: "443"
         - name: DEPLOY_MODE
           value: "cluster"
+        - name: LIVY_VERSION
+          value: "0.7.1-incubating"
+        - NAME: SPARK_HOME
+          value: "/opt/spark-3.1.2-bin-hadoop3.2"
         
         ports:
         - containerPort: 8998
