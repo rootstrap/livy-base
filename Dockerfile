@@ -1,6 +1,10 @@
 # select operating system
 FROM ubuntu:18.04
 
+ENV LIVY_VERSION=0.7.1-incubating
+ENV SPARK_VERSION=3.1.2
+ENV HADDOP_VERSION=3.2
+
 # install operating system packages 
 RUN apt-get update -y &&  apt-get install git curl gettext unzip wget python-pip python3-pip dnsutils make -y 
 
@@ -24,7 +28,7 @@ RUN bpkg install cha87de/bashutil -g
 # entrypoint
 COPY entrypoint.sh /opt/docker-init/entrypoint.sh
 COPY livy.conf /opt/docker-conf/livy.conf 
-COPY log4j.properties /opt/apache-livy-0.7.0-incubating-bin/conf/log4j.properties
+COPY log4j.properties /opt/apache-livy-${LIVY_VERSION}-bin/conf/log4j.properties
 
 # folders
 RUN mkdir /opt/apache-livy
@@ -32,14 +36,14 @@ RUN mkdir /var/apache-spark-binaries/
 
 # binaries
 # apache livy
-RUN wget https://downloads.apache.org/incubator/livy/0.7.1-incubating/apache-livy-0.7.1-incubating-bin.zip -O /tmp/livy.zip
+RUN wget https://downloads.apache.org/incubator/livy/${LIVY_VERSION}/apache-${LIVY_VERSION}-bin.zip -O /tmp/livy.zip
 RUN unzip /tmp/livy.zip -d /opt/
 # Logging dir
-RUN mkdir /opt/apache-livy-0.7.1-incubating-bin/logs
+RUN mkdir /opt/apache-${LIVY_VERSION}-bin/logs
 
 # apache spark
-RUN wget https://archive.apache.org/dist/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz -O /tmp/spark-3.1.2-bin-hadoop3.2.tgz
-RUN  tar -xvzf /tmp/spark-3.1.2-bin-hadoop3.2.tgz -C /opt/
+RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADDOP_VERSION}.tgz -O /tmp/spark-${SPARK_VERSION}-bin-hadoop${HADDOP_VERSION}.tgz
+RUN  tar -xvzf /tmp/spark-${SPARK_VERSION}-bin-hadoop${HADDOP_VERSION}.tgz -C /opt/
 
 # set Python3 as default
 RUN rm  /usr/bin/python
