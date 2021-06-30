@@ -71,13 +71,12 @@ kubectl get pods | grep livy
 
 1. Run a spark task with spark-submit      
 
-
 ```bash
-export LIVY_POD=$(kubectl get pods | grep livy | awk '{print $1}')
-kubectl exec -ti --namespace airflow  $LIVY_POD -- bash 
-```
-```bash
-/opt/spark-3.1.2-bin-hadoop3.2/bin/spark-submit  --master $SPARK_MASTER_ENDPOINT \
+    export LIVY_POD=$(kubectl get pods | grep livy | awk '{print $1}')
+    
+    kubectl exec -ti --namespace airflow  $LIVY_POD -- bash 
+    
+    /opt/spark-3.1.2-bin-hadoop3.2/bin/spark-submit  --master $SPARK_MASTER_ENDPOINT \
      --deploy-mode cluster \
      --name spark-test \
      --class org.apache.spark.examples.SparkPi \
@@ -89,6 +88,7 @@ kubectl exec -ti --namespace airflow  $LIVY_POD -- bash
      --conf spark.kubernetes.namespace=airflow \
      local:///opt/spark/examples/src/main/python/pi.py 10
 ``` 
+
 2. Validate that the spark-driver is running: 
 
 ```bash
@@ -97,43 +97,32 @@ kubectl exec -ti --namespace airflow  $LIVY_POD -- bash
 
 * Check Apache Livy is working: 
 
-1. Make a request to run a pyspark job 
+
+1. Port Forwarding for Apache Livy web:
 
 ```bash
+    kubectl port-forward $LIVY_POD  8998:8998
+```
 
+2. Make a request to run a pyspark job 
+
+```bash
 kubectl exec --namespace airflow $LIVY_POD -- curl -s -k -H 'Content-Type: application/json' \
     -X POST \
      -d '{
-        "deploy-mode" : "cluster",
-        "name": "spark-test",
+        "name": "test-001",
         "className": "org.apache.spark.examples.SparkPi",
         "numExecutors": 2,
         "file": "local:///opt/spark-3.1.2-bin-hadoop3.2/examples/src/main/python/pi.py",
         "args": ["10"],
         "conf": {
-            "spark.kubernetes.authenticate.driver.serviceAccountName" :"spark",
-            "spark.kubernetes.container.image": "rootstrap/spark-py:latest",
-            "spark.kubernetes.authenticate.caCertFile": "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
-            "spark.kubernetes.authenticate.oauthTokenFile=/var/run/secrets/kubernetes.io/serviceaccount/token", 
-            "spark.kubernetes.file.upload.path": "file:///tmp",
-            "spark.kubernetes.namespace": "airflow", 
-            "spark.yarn.appMasterEnv.PYSPARK_PYTHON": "pyspark3",
             "spark.kubernetes.driver.pod.name" : "spark-pi-driver",
+            "spark.kubernetes.container.image" : "rootstrap/spark-py:latest",
+            "spark.kubernetes.authenticate.driver.serviceAccountName" : "spark",
+            "spark.kubernetes.namespace" : "airflow" 
         }
-      }' "http://localhost:8998/batches" 
+      }' "http://localhost:8998/batches"
 ```
 
-2. Port Forwarding for Apache Livy web:
-
-```bash
-	kubectl port-forward $LIVY_POD  8998:8998
-```
-
-Enter at [http://localhost:8998](http://localhost:8998)
-
-2. 
-```bash
-curl -X POST -d '{"kind": "pyspark"}' -H "Content-Type: application/json" http://livy-api:8998/sessions
-curl http://livy-api:8998/sessions/0/statements -X POST -H 'Content-Type: application/json' -d '{"code":"1 + 1"}'
-```
+Enter at [http://localhost:8998](http://localhost:8998)  and check the status for the pyspark job 
 

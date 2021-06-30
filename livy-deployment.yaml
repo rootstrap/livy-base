@@ -16,8 +16,8 @@ spec:
     spec:
       serviceAccountName: spark
       containers:
-      - name: livy
-        image: rootstrap/apache-livy:latest
+      - image: rootstrap/apache-livy:latest
+        name: livy
         env:
         - name: SPARK_MASTER_ENDPOINT
           value: "k8s://https://8A5F524AA7865887E5C0D5EFF652141F.gr7.us-west-2.eks.amazonaws.com"
@@ -27,8 +27,7 @@ spec:
           value: "cluster"
         - name: LIVY_VERSION
           value: "0.7.1-incubating"
-        - NAME: SPARK_HOME
+        - name: SPARK_HOME
           value: "/opt/spark-3.1.2-bin-hadoop3.2"
-        
         ports:
         - containerPort: 8998
