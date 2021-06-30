@@ -18,6 +18,10 @@ Docker Image available at rootstrap/apache-livy.
     ./bin/docker-image-tool.sh -r rootstrap -t 3.1.2 -p ./kubernetes/dockerfiles/spark/bindings/python/Dockerfile build
 ```
 
+3. Push image 
+docker push rootstrap/spark:3.1.2
+docker push 
+
 # Test 
 
 ```bash
@@ -107,13 +111,14 @@ kubectl get pods | grep livy
 2. Make a request to run a pyspark job 
 
 ```bash
+export LIVY_POD=$(kubectl get pods | grep livy | awk '{print $1}')
 kubectl exec --namespace airflow $LIVY_POD -- curl -s -k -H 'Content-Type: application/json' \
     -X POST \
      -d '{
         "name": "test-001",
         "className": "org.apache.spark.examples.SparkPi",
         "numExecutors": 2,
-        "file": "local:///opt/spark-3.1.2-bin-hadoop3.2/examples/src/main/python/pi.py",
+        "file": "local:///opt/spark/examples/src/main/python/pi.py",
         "args": ["10"],
         "conf": {
             "spark.kubernetes.driver.pod.name" : "spark-pi-driver",
