@@ -22,7 +22,7 @@ Docker Image available at rootstrap/apache-livy.
 docker push rootstrap/spark:3.1.2
 docker push 
 
-# Test 
+# Test docker
 
 ```bash
 	export CLUSTER_URL=$(kubectl cluster-info | grep "Kubernetes master" | awk '{print $6}')
@@ -65,13 +65,15 @@ curl -s -k -H 'Content-Type: application/json' \
 ```
 4. Create livy app 
 ```bash
-kubectl apply --namespace airflow -f livy-deployment.yaml
+    kubectl apply --namespace airflow -f livy-deployment.yaml
+    kubectl expose deployment livy --type=ClusterIP --name=apache-livy
 ```
 5. Check livy is working 
 ```bash
-kubectl get pods | grep livy 
+    kubectl get pods | grep livy 
 ```
-* Check spark cluster is functioning: 
+
+* Check spark cluster is functioning 
 
 1. Run a spark task with spark-submit      
 
@@ -130,4 +132,5 @@ kubectl exec --namespace airflow $LIVY_POD -- curl -s -k -H 'Content-Type: appli
 ```
 
 Enter at [http://localhost:8998](http://localhost:8998)  and check the status for the pyspark job 
+
 
