@@ -20,7 +20,7 @@ spec:
         name: livy
         env:
         - name: SPARK_MASTER_ENDPOINT
-          value: "k8s://https://2698250B1DE83B58FB1C5E65DF738537.gr7.us-west-2.eks.amazonaws.com"
+          value: "CLUSTER_URL"
         - name: SPARK_MASTER_PORT
           value: "443"
         - name: DEPLOY_MODE

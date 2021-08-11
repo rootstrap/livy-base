@@ -13,14 +13,23 @@ Docker Image available at rootstrap/apache-livy.
 ```
 
 2. Build python Image 
+
+Define the following variables
+- SPARK_UID -> spark user id 
+- REPO -> name of the repo for the docker image
+- TAG -> tag number to be used for your image 
+
+For example the repo rootstrap and tag number 1.0 would be as a results an image tagged as rootstrap/spark-py:1.0 
+
 ```bash
     cd spark-3.1.2-bin-hadoop3.2
-    ./bin/docker-image-tool.sh -r rootstrap -t 3.1.2 -p ./kubernetes/dockerfiles/spark/bindings/python/Dockerfile build
+    ./bin/docker-image-tool.sh -u $SPARK_UID -r $REPO -t $TAG -p ./kubernetes/dockerfiles/spark/bindings/python/Dockerfile build
 ```
 
 3. Push image 
-docker push rootstrap/spark:3.1.2
-docker push 
+```bash
+    docker push $REPO/spark-py:$TAG 
+```
 
 # Test docker
 
@@ -52,7 +61,11 @@ curl -s -k -H 'Content-Type: application/json' \
 1. Edit file livy-deployment.yaml with the CLUSTER_URL value 
 
 ```bash
-    export CLUSTER_URL=$(kubectl cluster-info | grep "Kubernetes master" | awk '{print $6}')
+    cp livy-deployment-template.yaml livy-deployment.yaml
+    export CLUSTER_URL=$( kubectl cluster-info | grep "Kubernetes control plane" | awk '{print $7}')
+    sed -i -e "s|CLUSTER_URL|k8s://$CLUSTER_URL|g" livy-deployment.yaml
+    sed -i -e $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' livy-deployment.yaml
+    rm livy-deployment.yaml-e
 ```
 
 2. Create service account       
@@ -78,7 +91,7 @@ curl -s -k -H 'Content-Type: application/json' \
 1. Run a spark task with spark-submit      
 
 ```bash
-    export LIVY_POD=$(kubectl get pods | grep livy | awk '{print $1}')
+    export LIVY_POD=$(kubectl get pods | grep livy | grep 'Running' | awk '{print $1}')
     
     kubectl exec -ti --namespace airflow  $LIVY_POD -- bash 
     
@@ -132,5 +145,4 @@ kubectl exec --namespace airflow $LIVY_POD -- curl -s -k -H 'Content-Type: appli
 ```
 
 Enter at [http://localhost:8998](http://localhost:8998)  and check the status for the pyspark job 
-
-
+![livy-web](livy-web.png)
