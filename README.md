@@ -34,7 +34,7 @@ For example the repo rootstrap and tag number 1.0 would be as a results an image
 # Test docker
 
 ```bash
-	export CLUSTER_URL=$(kubectl cluster-info | grep "Kubernetes master" | awk '{print $6}')
+	export CLUSTER_URL=$(kubectl cluster-info | grep "Kubernetes" | awk '{print $7}')
 docker run --env SPARK_MASTER_ENDPOINT="k8s://$CLUSTER_URL" --env SPARK_MASTER_PORT="443" --env DEPLOY_MODE="cluster" rootstrap/apache-livy:latest 
 ```
 
